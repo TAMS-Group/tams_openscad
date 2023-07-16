@@ -14,7 +14,7 @@
 
 use <ur5_flange.scad>
 use <../sensors/sunrise_m3207.scad>
-use <../libs/simple-screws.scad>
+use <../libs/simple_screws.scad>
 
 eps = 0.01;
 ee = 40;
