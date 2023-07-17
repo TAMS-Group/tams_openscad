@@ -31,7 +31,7 @@ translate( [0,0,3*ee] ) tams_wsg50_adapter();
 translate( [0,0,5.5*ee +6 ] ) wsg_50_gripper();
 
 // Optional mounting plate for our "tactile exploration" setup
-// use <../sensors/ati-nano17e.scad>
+// use <../sensors/ati_nano17e.scad>
 // translate( [0,0,5*ee] ) lwr_ati_nano_plate();
 
 
