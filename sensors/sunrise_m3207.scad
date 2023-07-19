@@ -3,6 +3,9 @@
  * Simplified mechanical model of the Sunrise Instruments M3207
  * 6-axis force/torque sensor.
  *
+ * 2023.07.19 - outer adapter with d=97 to better fit PA10-6C
+ * 2023.07.19 - fix d_screws=28.28*2
+ * 2023.07.19 - add 45 deg rotation to outer, to fit sensor +x with notch
  * 2023.07.16 - update with countersunk screws
  * 2023.06.29 - created
  *
@@ -18,10 +21,10 @@ ffn  = 150;
 fdm_fudge = 0.2; // extra size for bores/holes/nuts due to shrinkage
 
 
-make_pa10_tams_flange_adapter = true; // pa10-6c -> core
-make_flange_m3207_adapter = true;   // outer -> m3207 base
-make_m3207 = true;                  // m3207 sensor
-make_m3207_core_adapter = true;     // m3207 tool -> core
+make_pa10_tams_flange_adapter = false; // pa10-6c -> core
+make_m3207_outer_adapter = true;   // outer -> m3207 base
+make_m3207 = false;                  // m3207 sensor
+make_m3207_core_adapter = false;     // m3207 tool -> core
 
 if (make_pa10_tams_flange_adapter) 
   color( "gray", 0.5 ) 
@@ -31,9 +34,9 @@ if (make_m3207)
   color( "lightblue" ) 
     translate( [0, 0, 12+4 + ee] ) sunrise_M3207();
 
-if (make_flange_m3207_adapter) 
+if (make_m3207_outer_adapter) 
   translate( [0,0,0] ) 
-    tams_flange_m3207_adapter();
+    tams_m3207_outer_adapter();
 
 if (make_m3207_core_adapter)
   translate( [0,0,0 + 12+4 + 17 + 3*ee] ) 
@@ -41,13 +44,13 @@ if (make_m3207_core_adapter)
 
 
 
-module tams_flange_m3207_adapter( 
-  d_outer = 99.0,      // total outer diameter
+module tams_m3207_outer_adapter( 
+  d_outer = 97.0,      // total outer diameter
   d_tams = 80.1,       // outer diameter of tams adapter flange
   d_inner = 40.0,
   h_tams = 12.0,       // height of tams adapter flange
   h_m3207 = 4.0,
-  d_m3207_screws = 28.8*2, 
+  d_m3207_screws = 28.28*2, // screws are at x,y=[-20,+20]
   countersunk = true,
 ) 
 {
@@ -82,10 +85,9 @@ module tams_flange_m3207_adapter(
       }
     }
 
-
     // axial bores for M3207 mounting screws (M4), depth 4mm
     for( i=[0:3] ) {
-      rotate( [0,0,i*90] )
+      rotate( [0,0,i*90+45] )
         translate( [d_m3207_screws/2, 0, h_tams/2-eps] )
           cylinder( d=4.2, h=h_m3207+2*eps+50, center=false, $fn=50 );
     }
