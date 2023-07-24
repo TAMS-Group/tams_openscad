@@ -24,7 +24,7 @@ fdm_fudge = 0.2; // extra size for bores/holes/nuts due to shrinkage
 make_pa10_tams_flange_adapter = false; // pa10-6c -> core
 make_m3207_outer_adapter = true;   // outer -> m3207 base
 make_m3207 = false;                  // m3207 sensor
-make_m3207_core_adapter = false;     // m3207 tool -> core
+make_m3207_core_adapter = true;     // m3207 tool -> core
 
 if (make_pa10_tams_flange_adapter) 
   color( "gray", 0.5 ) 
@@ -52,6 +52,7 @@ module tams_m3207_outer_adapter(
   h_m3207 = 4.0,
   d_m3207_screws = 28.28*2, // screws are at x,y=[-20,+20]
   countersunk = true,
+  theta_screws=0,
 ) 
 {
 
@@ -87,7 +88,7 @@ module tams_m3207_outer_adapter(
 
     // axial bores for M3207 mounting screws (M4), depth 4mm
     for( i=[0:3] ) {
-      rotate( [0,0,i*90+45] )
+      rotate( [0,0,i*90+theta_screws] )
         translate( [d_m3207_screws/2, 0, h_tams/2-eps] )
           cylinder( d=4.2, h=h_m3207+2*eps+50, center=false, $fn=50 );
     }
@@ -116,6 +117,7 @@ module tams_m3207_core_adapter(
   make_screws = false,   // include fake screws
   // extra_cavities = [],   // [[angles], r_outer, d_cavity, h_cavity]
   extra_cavities = [[0,90,180,270], 28.8, 10, 7],
+  theta_notch = 45, // so that +x coincides with M3207 sensing frame
 ) 
 {
   h2 =  4.0;   // M6 screws Senkkopf height
@@ -161,8 +163,9 @@ module tams_m3207_core_adapter(
     }
 
     // alignment notch at +x
-    translate( [d_outer/2, 0, -eps] )
-      cylinder( d=2.0, h=hh+2*eps, center=false, $fn=50 );
+    rotate( [0,0,theta_notch] )
+      translate( [d_outer/2, 0, -eps] )
+        cylinder( d=2.0, h=hh+2*eps, center=false, $fn=50 );
 
     // optional axial cavities to fit next-state mounting plates
     if (len(extra_cavities) > 1) {
